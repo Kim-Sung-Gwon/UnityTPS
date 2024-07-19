@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Fire
+  - BULLET
+  - ENEMY
+  - E_BULLET
+  - EXPEFFECT
+  - SWAT
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - PLAYER
+  - BARREL
+  - BULLET
+  - WALL
+  - FLOOR
+  - SPARK
+  - ENEMY
+  - E_BULLET
+  - EXPEFFECT
+  - SWAT
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
