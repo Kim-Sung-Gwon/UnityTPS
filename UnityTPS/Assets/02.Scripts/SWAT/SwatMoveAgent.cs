@@ -7,6 +7,7 @@ using UnityEngine.AI;
 public class SwatMoveAgent : MonoBehaviour
 {
     public List<Transform> WayPointList;
+    public int nexIdx = 0;
     [SerializeField] private NavMeshAgent agent;
     private readonly float patrolSpeed = 1.5f;
     private readonly float traceSpeed = 4.0f;
@@ -35,6 +36,7 @@ public class SwatMoveAgent : MonoBehaviour
             _traceTarget = value;
             agent.speed = traceSpeed;
             damping = 7.0f;
+            TraceTarget(_traceTarget);
         }
     }
     public float speed
@@ -53,6 +55,7 @@ public class SwatMoveAgent : MonoBehaviour
             group.GetComponentsInChildren<Transform>(WayPointList);
             WayPointList.RemoveAt(0);
         }
+        MovewayPoint();
     }
     void Update()
     {
@@ -62,5 +65,28 @@ public class SwatMoveAgent : MonoBehaviour
             swatTr.rotation = Quaternion.Slerp(swatTr.rotation, rot, Time.deltaTime * damping);
         }
         if (_patrolling == false) return;
+        if (agent.remainingDistance <= 0.5f)
+        {
+            nexIdx = ++nexIdx % WayPointList.Count;
+            MovewayPoint();
+        }
+    }
+    void MovewayPoint()
+    {
+        if (agent.isPathStale) return;
+        agent.destination = WayPointList[nexIdx].position;
+        agent.isStopped = false;
+    }
+    void TraceTarget(Vector3 pos)
+    {
+        if (agent.isPathStale) return;
+        agent.destination = pos;
+        agent.isStopped = false;
+    }
+    public void Stop()
+    {
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        _patrolling = false;
     }
 }

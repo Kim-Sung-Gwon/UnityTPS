@@ -18,21 +18,31 @@ public class RemoveBullet : MonoBehaviour
         hitspark = Resources.Load("HitSpark") as GameObject;
         hitClip = Resources.Load("Sounds/hitMetal") as AudioClip;
     }
-    private void OnCollisionEnter(Collision collision)
+    #region
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag(bulletTag)
+    //        || collision.gameObject.CompareTag(E_bulletTag))
+    //    {
+    //        //Destroy(collision.gameObject);
+    //        collision.gameObject.SetActive(false);
+    //        Vector3 hitPos = collision.transform.position;
+    //        Vector3 firePos = (fireCtrl.FirePos.position - hitPos).normalized;
+    //        Quaternion rot = Quaternion.FromToRotation(Vector3.forward, firePos.normalized);
+    //        GameObject spark = Instantiate(hitspark, hitPos, Quaternion.identity);
+    //        Destroy(spark, 1f);
+    //        //source.PlayOneShot(hitClip, 1f);
+    //        SoundManager.S_instance.PlaySound(hitPos, hitClip);
+    //    }
+    //}
+    #endregion
+    void OnDamage(object[] _params)
     {
-        if (collision.gameObject.CompareTag(bulletTag)
-            || collision.gameObject.CompareTag(E_bulletTag))
-        {
-            //Destroy(collision.gameObject);
-            collision.gameObject.SetActive(false);
-            Vector3 hitPos = collision.transform.position;
-            Vector3 firePos = (fireCtrl.FirePos.position - hitPos).normalized;
-            Quaternion rot = Quaternion.FromToRotation(Vector3.forward, firePos.normalized);
-            GameObject spark = Instantiate(hitspark, hitPos, Quaternion.identity);
-            Destroy(spark, 1f);
-            //source.PlayOneShot(hitClip, 1f);
-            SoundManager.S_instance.PlaySound(hitPos, hitClip);
-        }
+        Vector3 hitPos = (Vector3)_params[0];
+        //Vector3 firePos = (fireCtrl.FirePos.position - hitPos).normalized;
+        Quaternion rot = Quaternion.FromToRotation(-Vector3.forward, hitPos.normalized);
+        GameObject spark = Instantiate(hitspark, hitPos, rot);
+        Destroy(spark, 1f);
+        SoundManager.S_instance.PlaySound(hitPos, hitClip);
     }
-
 }

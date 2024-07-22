@@ -351,6 +351,7 @@
 "Assets/02.Scripts/Player/Bullet.cs"
 "Assets/02.Scripts/Player/Damage.cs"
 "Assets/02.Scripts/Player/FireCtrl.cs"
+"Assets/02.Scripts/Player/LaserBeam.cs"
 "Assets/02.Scripts/Player/Player.cs"
 -langversion:9.0
 /deterministic

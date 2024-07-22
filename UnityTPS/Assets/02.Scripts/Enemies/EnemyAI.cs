@@ -32,7 +32,7 @@ public class EnemyAI : MonoBehaviour
         moveAgent = GetComponent<EnemiyMoveAgent>();
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-        playerTr = player.GetComponent<Transform>();
+            playerTr = player.GetComponent<Transform>();
         enemyTr = GetComponent<Transform>();
         enemyFire = GetComponent<EnemyFire>();
         ws = new WaitForSeconds(0.3f);
@@ -50,7 +50,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (state == State.DIE) yield break;
             // 사망 상태이면 코루틴 함수를 종료 시킴
-            
+
             float dist = (playerTr.position - enemyTr.position).magnitude;
             if (dist <= attackDist)
                 state = State.ATTACK;
@@ -78,7 +78,7 @@ public class EnemyAI : MonoBehaviour
 
                 case State.ATTACK:
                     if (enemyFire.isFire == false)
-                    enemyFire.isFire=true;
+                        enemyFire.isFire = true;
                     moveAgent.Stop();
                     animator.SetBool(hashMove, false);
                     break;

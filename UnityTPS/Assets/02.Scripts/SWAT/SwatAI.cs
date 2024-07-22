@@ -26,20 +26,31 @@ public class SwatAI : MonoBehaviour
         animator = GetComponent<Animator>();
         moveAgent = GetComponent<SwatMoveAgent>();
         var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null )
-        playerTr = playerTr.GetComponent<Transform>();
+        if (player != null)
+            playerTr = playerTr.GetComponent<Transform>();
         swatTr = GetComponent<Transform>();
         ws = new WaitForSeconds(0.3f);
     }
-    void Update()
+    private void OnEnable()
     {
-        //StartCoroutine(CheckState());
+        StartCoroutine(CheckState());
         StartCoroutine(Action());
     }
-    //IEnumerable CheckState()
-    //{
-    //    while
-    //}
+    IEnumerator CheckState()
+    {
+        while (!isDie)
+        {
+            if (state == State.DIE) yield break;
+            float dist = (playerTr.position - swatTr.position).magnitude;
+            if (dist < attackDist)
+                state = State.ATTACK;
+            else if (dist > traceDist)
+                state = State.TRACE;
+            else
+                state = State.PTROL;
+            yield return ws;
+        }
+    }
     IEnumerator Action()
     {
         while (!isDie)
@@ -49,6 +60,14 @@ public class SwatAI : MonoBehaviour
             {
                 case State.PTROL:
                     moveAgent.patrolling = true;
+                    break;
+                case State.ATTACK:
+                    moveAgent.Stop();
+                    break;
+                case State.TRACE:
+                    moveAgent.traceTarget = playerTr.position;
+                    break;
+                case State.DIE:
                     break;
             }
         }

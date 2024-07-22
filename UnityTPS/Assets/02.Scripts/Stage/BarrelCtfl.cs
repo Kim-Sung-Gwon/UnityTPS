@@ -11,26 +11,46 @@ public class BarrelCtfl : MonoBehaviour
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private Rigidbody rd;
     [SerializeField] private int hitCount = 0;
+    [SerializeField] private MeshFilter meshFilter;
+    [SerializeField] private Mesh[] meshes;
     private readonly string bulletTag = "BULLET";
     void Start()
     {
         rd = GetComponent<Rigidbody>();
         meshRenderer = GetComponent<MeshRenderer>();
+        meshFilter = GetComponent<MeshFilter>();
+        meshes = Resources.LoadAll<Mesh>("Meshes");
         //textures = Resources.LoadAll("BarrelTextures") as Texture[];
         textures = Resources.LoadAll<Texture>("BarrelTextures");
         meshRenderer.material.mainTexture = textures[Random.Range(0, textures.Length)];
         Effect = Resources.Load("ExpEffect") as GameObject;
         FireClip = Resources.Load("Sounds/grenadeSound") as AudioClip;
     }
-    private void OnCollisionEnter(Collision col)
+    #region 프로젝타일 방식의 충돌 감지
+    //private void OnCollisionEnter(Collision col)
+    //{
+    //    if (col.gameObject.CompareTag(bulletTag))
+    //    {
+    //        if (++hitCount == 5)
+    //        {
+    //            ExplosionBarrel();
+    //        }
+    //    }
+    //}
+    #endregion
+    void OnDamage(object[] _params)
     {
-        if (col.gameObject.CompareTag(bulletTag))
-        {
-            if (++hitCount == 5)
-            {
-                ExplosionBarrel();
-            }
-        }
+        Vector3 FirePos = (Vector3)_params[0];   // 발사 위치
+        Vector3 hitPos = (Vector3)_params[1];    // 맞은 위치
+        // 거리와 방향       = 맞은 좌표에서 발사 위치의 차
+        Vector3 incomeVector = hitPos - FirePos; // Ray의 각도를 구하기 위해
+        // 전문 용어로는 입사 벡터라고 한다.
+        incomeVector = incomeVector.normalized;  // 입사 벡터를 정교화 벡터로 변경
+        GetComponent<Rigidbody>().AddForceAtPosition(incomeVector * 1500f, hitPos);
+        // Ray의 hit 좌표에 입사 벡터의 각도로 힘을 생성
+        // 어떤 지점에 힘을 모아서 무리가 생성되게 하려고 할때 호출 되는 메서드
+        if (++hitCount == 5)
+            ExplosionBarrel();
     }
     void ExplosionBarrel()
     {
@@ -52,8 +72,11 @@ public class BarrelCtfl : MonoBehaviour
             {
                 Invoke("BarrelMassChange()", 3.0f);
             }
-            Vector3 HitPos = col.transform.position;
-            SoundManager.S_instance.PlaySound(HitPos, FireClip);
+            SoundManager.S_instance.PlaySound(transform.position, FireClip);
+            // 찌그러진 메쉬를 적용
+            int idx = Random.Range(0, meshes.Length);
+            meshFilter.sharedMesh = meshes[idx];
+            GetComponent<MeshCollider>().sharedMesh = meshes[Random.Range(0, meshes.Length)];
         }
     }
     void BarrelMassChange()

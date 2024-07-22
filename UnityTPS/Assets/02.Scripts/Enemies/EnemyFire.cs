@@ -52,7 +52,7 @@ public class EnemyFire : MonoBehaviour
                 damping * Time.deltaTime);
         }
     }
-    void Fire()
+    private void Fire()
     {
         var E_bullet = ObjectPoolingManager.poolingManager.GetE_BulletPool();
         E_bullet.transform.position = firePos.position;
